@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
+document.addEventListener("touchmove", touchMoveHandler);
 
 
 let game = {    
@@ -255,7 +256,7 @@ function detectCollisionDirection(brick) {
 }
 
 function keyDownHandler(e) {
-  if (!game.on && e.key === ' ') {
+  if (!game.on && (e.key === ' ' || touchMoveHandler(e))) {
     play();
   }
   if (game.on && (e.key === 'm' || e.key === 'M')) {
@@ -288,6 +289,13 @@ function mouseMoveHandler(e) {
   const isInsideCourt = () => mouseX > 0 && mouseX <  canvas.width;
   if(isInsideCourt()) {
     paddle.x = mouseX - paddle.width / 2;
+  }
+}
+function touchMoveHandler(e) { 
+  const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+  const isInsideCourt= () => touchX > 0 && touchX < canvas.width;
+  if(isInsideCourt()) {
+    paddle.x = touchX - paddle.width/2;
   }
 }
 
