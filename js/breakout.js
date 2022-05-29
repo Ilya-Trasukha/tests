@@ -285,14 +285,14 @@ function keyUpHandler(e) {
 }
 
 function mouseMoveHandler(e) {
-  const mouseX = e.clientX - canvas.offsetLeft;    
+  const mouseX = e.clientX - canvas.getBoundingClientRect().bottom;    
   const isInsideCourt = () => mouseX > 0 && mouseX <  canvas.width;
   if(isInsideCourt()) {
     paddle.x = mouseX - paddle.width / 2;
   }
 }
 function touchMoveHandler(e) { 
-  const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+  const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().top;
   const isInsideCourt= () => touchX > 0 && touchX < canvas.width;
   if(isInsideCourt()) {
     paddle.x = touchX - paddle.width/2;
