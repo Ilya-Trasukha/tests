@@ -256,7 +256,7 @@ function detectCollisionDirection(brick) {
 }
 
 function keyDownHandler(e) {
-  if (!game.on && (e.key === ' ' || touchMoveHandler(e))) {
+  if (!game.on && e.key === ' ') {
     play();
   }
   if (game.on && (e.key === 'm' || e.key === 'M')) {
