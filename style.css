@@ -353,12 +353,12 @@ h2 {
   }
 }
 
-@media (orientation: landscape) and (max-height: 850px) {
+@media (orientation: landscape) and (max-height: 650px) {
   canvas {
-    max-height: 400px;
-    max-width: 950px;
+    max-height: 320px;
+    max-width: 650px;
     position: absolute;
-    transform: translate(-50%, -50%);
+    transform: translate(-45%, -50%);
     top: 48%;
   }
 
