@@ -6,7 +6,7 @@ document.addEventListener("mousemove", mouseMoveHandler);
 document.addEventListener("touchmove", touchMoveHandler);
 
 
-let game = {    
+let game = {
   requestId: null,
   timeoutId: null,
   leftKey: false,
@@ -17,7 +17,9 @@ let game = {
 let paddle = {
   height: 20,
   width: 100,
-  get y() { return canvas.height - this.height; }
+  get y() {
+    return canvas.height - this.height;
+  }
 }
 let ball = {
   radius: 10
@@ -25,7 +27,9 @@ let ball = {
 let brick = {
   rows: 5,
   cols: 10,
-  get width() { return canvas.width / this.cols; },
+  get width() {
+    return canvas.width / this.cols;
+  },
   height: 30
 }
 let brickField = [];
@@ -34,7 +38,8 @@ let images = {
   ball: new Image(),
   paddle: new Image()
 }
-const NO_OF_HIGH_SCORES = 10;
+const noOfHighScores = 10;
+
 function onImageLoad(e) {
   resetGame();
   initBricks();
@@ -42,11 +47,11 @@ function onImageLoad(e) {
   render();
   ctx.font = '50px ArcadeClassic';
   ctx.fillStyle = 'lime';
-  ctx.fillText('PRESS SPACE', canvas.width / 2 - 120, canvas.height / 2);
+  ctx.fillText('PRESS SPACE/START', canvas.width / 2 - 170, canvas.height / 2);
 };
 images.background.addEventListener('load', onImageLoad);
 images.background.src = './images/background.png';
-images.ball.src =  './images/ball.png';
+images.ball.src = './images/ball.png';
 images.paddle.src = './images/paddle.png';
 
 const sounds = {
@@ -59,7 +64,7 @@ const sounds = {
   paddle: new Audio('./sounds/paddle.mp3')
 }
 
-function play() {   
+function play() {
   cancelAnimationFrame(game.requestId);
   clearTimeout(game.timeoutId);
   game.on = true;
@@ -81,7 +86,11 @@ function resetGame() {
   game.score = 0;
   game.level = 1;
   game.lives = 3;
-  game.time = { start: performance.now(), elapsed: 0, refreshRate: 16  };
+  game.time = {
+    start: performance.now(),
+    elapsed: 0,
+    refreshRate: 16
+  };
 }
 
 function initSounds() {
@@ -94,7 +103,7 @@ function initSounds() {
 function resetBall() {
   ball.x = canvas.width / 2;
   ball.y = canvas.height - paddle.height - 2 * ball.radius;
-  ball.dx = game.speed * (Math.random() * 2 - 1);  // Random trajectory
+  ball.dx = game.speed * (Math.random() * 2 - 1); // Random trajectory
   ball.dy = -game.speed; // Up
 }
 
@@ -107,8 +116,8 @@ function initBricks() {
   brickField = [];
   const topMargin = 30;
   const colors = ['red', 'orange', 'yellow', 'blue', 'green'];
-  for(let row = 0; row < brick.rows; row++) {
-    for(let col = 0; col < brick.cols; col++) {
+  for (let row = 0; row < brick.rows; row++) {
+    for (let col = 0; col < brick.cols; col++) {
       brickField.push({
         x: col * brick.width,
         y: row * brick.height + topMargin,
@@ -122,7 +131,7 @@ function initBricks() {
   }
 }
 
-function animate(now = 0) { 
+function animate(now = 0) {
   game.time.elapsed = now - game.time.start;
   if (game.time.elapsed > game.time.refreshRate) {
     game.time.start = now;
@@ -131,7 +140,7 @@ function animate(now = 0) {
     detectCollision();
     detectBrickCollision();
     if (isLevelCompleted() || isGameOver()) return;
-  }    
+  }
   game.requestId = requestAnimationFrame(animate);
 }
 
@@ -149,15 +158,15 @@ function update() {
   ball.y += ball.dy;
   if (game.rightKey) {
     paddle.x += paddle.dx;
-    if (paddle.x + paddle.width > canvas.width){
+    if (paddle.x + paddle.width > canvas.width) {
       paddle.x = canvas.width - paddle.width;
     }
   }
   if (game.leftKey) {
     paddle.x -= paddle.dx;
-      if (paddle.x < 0){
-        paddle.x = 0;
-      }
+    if (paddle.x < 0) {
+      paddle.x = 0;
+    }
   }
 }
 
@@ -173,31 +182,40 @@ function drawBricks() {
 
 function drawScore() {
   ctx.font = '24px ArcadeClassic';
-  ctx. fillStyle = 'white';
-  const { level, score } = game;
+  ctx.fillStyle = 'white';
+  const {
+    level,
+    score
+  } = game;
   ctx.fillText(`Level: ${level}`, 5, 23);
   ctx.fillText(`Score: ${score}`, canvas.width / 2 - 50, 23);
 }
 
 function drawLives() {
-  if (game.lives > 2) { ctx.drawImage(images.paddle, canvas.width - 150, 9, 40, 13); }
-  if (game.lives > 1) { ctx.drawImage(images.paddle, canvas.width - 100, 9, 40, 13); }
-  if (game.lives > 0) { ctx.drawImage(images.paddle, canvas.width - 50, 9, 40, 13); }
+  if (game.lives > 2) {
+    ctx.drawImage(images.paddle, canvas.width - 150, 9, 40, 13);
+  }
+  if (game.lives > 1) {
+    ctx.drawImage(images.paddle, canvas.width - 100, 9, 40, 13);
+  }
+  if (game.lives > 0) {
+    ctx.drawImage(images.paddle, canvas.width - 50, 9, 40, 13);
+  }
 }
 
 function detectCollision() {
   const hitTop = () => ball.y < 0;
   const hitLeftWall = () => ball.x < 0;
   const hitRightWall = () => ball.x + ball.radius * 2 > canvas.width;
-  const hitPaddle = () => 
+  const hitPaddle = () =>
     ball.y + 2 * ball.radius > canvas.height - paddle.height &&
-    ball.y + ball.radius < canvas.height && 
+    ball.y + ball.radius < canvas.height &&
     ball.x + ball.radius > paddle.x &&
     ball.x + ball.radius < paddle.x + paddle.width;
   if (hitLeftWall()) {
     ball.dx = -ball.dx;
     ball.x = 0;
-  }        
+  }
   if (hitRightWall()) {
     ball.dx = -ball.dx;
     ball.x = canvas.width - 2 * ball.radius;
@@ -222,12 +240,12 @@ function detectCollision() {
 
 function detectBrickCollision() {
   let directionChanged = false;
-  const isBallInsideBrick = (brick) => 
+  const isBallInsideBrick = (brick) =>
     ball.x + 2 * ball.radius > brick.x &&
-    ball.x < brick.x + brick.width && 
-    ball.y + 2 * ball.radius > brick.y && 
+    ball.x < brick.x + brick.width &&
+    ball.y + 2 * ball.radius > brick.y &&
     ball.y < brick.y + brick.height;
-    brickField.forEach((brick) => {
+  brickField.forEach((brick) => {
     if (brick.hitsLeft && isBallInsideBrick(brick)) {
       sounds.brick.currentTime = 0;
       sounds.brick.play();
@@ -237,7 +255,7 @@ function detectBrickCollision() {
       }
       game.score += brick.points;
       if (!directionChanged) {
-      directionChanged = true;
+        directionChanged = true;
         detectCollisionDirection(brick);
       }
     }
@@ -285,17 +303,18 @@ function keyUpHandler(e) {
 }
 
 function mouseMoveHandler(e) {
-  const mouseX = e.clientX - canvas.getBoundingClientRect().bottom;    
-  const isInsideCourt = () => mouseX > 0 && mouseX <  canvas.width;
-  if(isInsideCourt()) {
+  const mouseX = e.clientX - canvas.getBoundingClientRect().bottom;
+  const isInsideCourt = () => mouseX > 0 && mouseX < canvas.width;
+  if (isInsideCourt()) {
     paddle.x = mouseX - paddle.width / 2;
   }
 }
-function touchMoveHandler(e) { 
+
+function touchMoveHandler(e) {
   const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().top;
-  const isInsideCourt= () => touchX > 0 && touchX < canvas.width;
-  if(isInsideCourt()) {
-    paddle.x = touchX - paddle.width/2;
+  const isInsideCourt = () => touchX > 0 && touchX < canvas.width;
+  if (isInsideCourt()) {
+    paddle.x = touchX - paddle.width / 2;
   }
 }
 
@@ -332,8 +351,8 @@ function isGameOver() {
     game.lives -= 1;
     sounds.ballLost.play();
     if (game.lives === 0) {
-        gameOver(); 
-        return true;
+      gameOver();
+      return true;
     }
     resetBall();
     resetPaddle();
@@ -363,19 +382,22 @@ function showHighScores() {
 
 function checkHighScore(score) {
   const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
-  const lowestScore = highScores[NO_OF_HIGH_SCORES - 1]?.score ?? 0;
+  const lowestScore = highScores[noOfHighScores - 1] ?.score ?? 0;
 
   if (score > lowestScore) {
     const name = prompt('You got a highscore! Enter name:');
     if (name === null) {
       showHighScores();
       return;
-      } else {
-      const newScore = { score, name };
+    } else {
+      const newScore = {
+        score,
+        name
+      };
       saveHighScore(newScore, highScores);
       showHighScores();
     }
-  } 
+  }
 }
 
 function saveHighScore(score, highScores) {
